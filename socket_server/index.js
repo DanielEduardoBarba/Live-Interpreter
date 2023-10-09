@@ -51,9 +51,19 @@ function server() {
 
 }
 
+function removeAccentsWithSpaces(input) {
+    return input
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/\s+/g, " "); // Replace consecutive spaces with a single space
+  }
+
 async function translate(from, to, message) {
-    const alphaTxtOnly = message.replace(/[^a-zA-Z]/g, '')
-    const translatedTxt = await sysCMD(`trans ${from}:${to} ${alphaTxtOnly} | sed -r "s/\x1B\[[0-9;]*[mK]//g" | awk 'BEGIN { found = 0 } /^$/ { found++ } found == 1 && found < 2 { print }'`)
+    const noAccentTxt = removeAccentsWithSpaces(message)
+    // const plainTxt = message.replace(/[^a-zA-Z]/g, '')
+    // console.log("PLAIN TXT ", plainTxt)
+    console.log("NO ACCENT TXT ", noAccentTxt)
+    const translatedTxt = await sysCMD(`trans ${from}:${to} "${noAccentTxt}" | sed -r "s/\x1B\[[0-9;]*[mK]//g" | awk 'BEGIN { found = 0 } /^$/ { found++ } found == 1 && found < 2 { print }'`)
     return translatedTxt
 
 }
@@ -73,4 +83,8 @@ function sysCMD(cmd) {
 
 
 server()
+
+// const originalText = "hijo de rebelión";
+// const textWithoutAccents = removeAccentsWithSpaces(originalText);
+// console.log(textWithoutAccents);
 
