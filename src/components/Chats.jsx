@@ -24,7 +24,7 @@ export default function Chats() {
     })
 
     return (
-            <div  className="w-full flex flex-col justify-start w-screen h-screen bg-gray-500 overflow-scroll">
+            <div  className="flex flex-col  w-screen h-screen bg-gray-500 overflow-scroll">
 
                 {
                     allWords.length && refresh
